@@ -1,17 +1,9 @@
+# solution: https://rosettacode.org/wiki/Sum_and_Product_Puzzle#Python
+
 from collections import Counter
 
 
-def know(possible_pairs):
-    return len(possible_pairs) == 1
-
-
 PAIRS = set((x, y) for x in range(2, 100) for y in range(x + 1, 100))
-
-
-def factor_pairs(n):
-    '''Returns all possible pairs (a,b) which a * b == n'''
-    return [(a, b) for a in range(2, int(n/2+1))
-            for b in range(a + 11, int(n/2+1)) if a*b == n]
 
 
 def sum_pairs(n):
@@ -28,9 +20,9 @@ def statement12(possible_pairs):
     uniq_products = set((a, b)
                         for a, b in possible_pairs
                         if products_counts[a * b] == 1)
-    s_pairs = [(a, b) for a, b in possible_pairs if
-               all((x, y) not in uniq_products
-                   for (x, y) in sum_pairs(a + b))]
+    s_pairs = [(a, b) for a, b in possible_pairs
+               if all((x, y) not in uniq_products
+                      for (x, y) in sum_pairs(a + b))]
     return s_pairs
 
 
