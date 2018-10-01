@@ -1,4 +1,9 @@
-def captcha(seq):
+def toList(s):
+    return [int(x) for x in s]
+
+
+def captcha(s):
+    seq = toList(s)
     seq = seq + [seq[0]]
     acc = 0
     for idx, val in enumerate(seq):
