@@ -1,5 +1,6 @@
 import utils
 import math
+from itertools import islice
 
 
 def move(position, direction):
@@ -98,3 +99,27 @@ tuple'''
     ox, oy = orig[0], orig[1]
     dx, dy = dest[0], dest[1]
     return abs(ox - dx) + abs(oy - dy)
+
+
+HEADINGS = UP, LEFT, DOWN, RIGHT = (0, -1), (-1, 0), (0, 1), (1, 0)
+
+
+def norvig_spiral():
+    '''Yield successive (x, y) coordinates of squares on a spiral.
+    Example: list(itertools.islice(spiral(), 10))
+'''
+    x = y = s = 0
+    yield (0, 0)
+    while True:
+        for (dx, dy) in (RIGHT, UP, LEFT, DOWN):
+            if dy:
+                s += 1  # increment side length before RIGHT and LEFT
+            for _ in range(s):
+                x += dx
+                y += dy
+                yield(x, y)
+
+
+def norvig_solve(M):
+    coords = utils.nth(norvig_spiral(), M - 1)
+    return utils.cityblock_distance(coords)
