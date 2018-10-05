@@ -4,9 +4,9 @@ import unittest
 
 class TestDay4(unittest.TestCase):
     @classmethod
-    def setUpClass(self):
+    def setUpClass(cls):
         filename = 'data/input4.txt'
-        self.content = day4.readFile(filename)
+        cls.content = day4.readFile(filename)
 
     def test_passphrase(self):
         result = day4.isValid(self.content)
