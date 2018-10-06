@@ -3,7 +3,7 @@ import unittest
 from myutils import readFile
 
 
-class TestDay4(unittest.TestCase):
+class TestDay5(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         filename = 'data/input5.txt'
