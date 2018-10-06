@@ -1,12 +1,13 @@
 import day4
 import unittest
+from myutils import readFile
 
 
 class TestDay4(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         filename = 'data/input4.txt'
-        cls.content = day4.readFile(filename)
+        cls.content = readFile(filename)
 
     def test_passphrase(self):
         result = day4.isValid(self.content)
