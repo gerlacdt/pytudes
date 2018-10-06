@@ -23,12 +23,9 @@ def maze2(instructions):
     current = 0
     maxLength = len(instructions)
     steps = 0
-    while current < maxLength or current <= 0:
+    while 0 <= current < maxLength:
         instr = instructions[current]
-        if instr >= 3:
-            instructions[current] -= 1
-        else:
-            instructions[current] += 1  # increment instructions
+        instructions[current] += (-1 if instructions[current] >= 3 else 1)
         current += instr  # move
         steps += 1
     return steps
