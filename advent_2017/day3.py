@@ -1,6 +1,6 @@
 import utils
 import math
-from itertools import islice
+from collections import defaultdict
 
 
 def move(position, direction):
@@ -101,9 +101,6 @@ tuple'''
     return abs(ox - dx) + abs(oy - dy)
 
 
-HEADINGS = UP, LEFT, DOWN, RIGHT = (0, -1), (-1, 0), (0, 1), (1, 0)
-
-
 def norvig_spiral():
     '''Yield successive (x, y) coordinates of squares on a spiral.
     Example: list(itertools.islice(spiral(), 10))
@@ -111,7 +108,8 @@ def norvig_spiral():
     x = y = s = 0
     yield (0, 0)
     while True:
-        for (dx, dy) in (RIGHT, UP, LEFT, DOWN):
+        for (dx, dy) in (utils.RIGHT, utils.UP,
+                         utils.LEFT, utils.DOWN):
             if dy:
                 s += 1  # increment side length before RIGHT and LEFT
             for _ in range(s):
@@ -123,3 +121,17 @@ def norvig_spiral():
 def norvig_solve(M):
     coords = utils.nth(norvig_spiral(), M - 1)
     return utils.cityblock_distance(coords)
+
+
+def spiralsums():
+    '''Yield the values of a spiral where each square has the sum of the 8
+    neighbors.
+    '''
+    value = defaultdict(int)
+    for p in norvig_spiral():
+        value[p] = sum(value[q] for q in utils.neighbors8(p)) or 1
+        yield value[p]
+
+
+def spiral2(M):
+    return utils.first(x for x in spiralsums() if x > M)
