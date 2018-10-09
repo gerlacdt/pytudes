@@ -1,4 +1,9 @@
-from collections import deque
+# coding: utf-8
+
+from collections import deque, Counter
+from utils import Ø, groupby, flatten, first
+import re
+
 
 # read input
 # build graph from input
@@ -95,16 +100,59 @@ def findRoot(s):
     return None
 
 
-def part2(s):
-    tree = build_tree(s)
-    root = findRoot(s)
+def norvig_towers(lines):
+    "Return (weight, above) dicts."
+    weight = {}
+    above = {}
+    for line in lines:
+        name, w, *rest = re.findall(r'\w+', line)
+        weight[name] = int(w)
+        above[name] = set(rest)
+    return weight, above
 
-    def fn(graph, n, parent):
-        children = [graph[key] for key in getAdjacents(n)]
-        weights = [getWeight(n)] + [getWeight(child) for child in children]
-        return (getKey(parent), getKey(n), weights, sum(weights))
 
-    nodes_with_weights = bfs(tree, root,
-                             collectFn=fn)
+def norvig_root(input1):
+    lines = input1.splitlines()
+    weight, above = norvig_towers(lines)
+    programs = set(above)
 
-    return nodes_with_weights
+    return programs - set(flatten(above.values()))
+
+
+def norvig_part2(input1):
+    lines = input1.splitlines()
+    weight, above = norvig_towers(lines)
+    programs = set(above)
+
+    below = {a: b for b in programs for a in above[b]}
+
+    def tower_weight(p):
+        "Total weight for the tower whose root (bottom) is p."
+        return weight[p] + sum(map(tower_weight, above[p]))
+
+
+    def siblings(p):
+        "The other programs at the same level as this one."
+        if p not in below:
+            return Ø  # the root has no siblings
+        else:
+            return above[below[p]] - {p}  # remove itself from sibling result set
+
+
+    def wrong(p):
+        return tower_weight(p) not in map(tower_weight, siblings(p))
+
+
+    def wrongest(programs):
+        return first(p for p in programs
+                     if wrong(p)
+                     and not any(wrong(p2) for p2 in above[p]))
+
+
+    def correct(p):
+        """Return the weight that would make p's tower's weight the same as
+        its sibling towers."""
+        delta = tower_weight(first(siblings(p))) - tower_weight(p)
+        return weight[p] + delta
+
+    return correct(wrongest(programs))
