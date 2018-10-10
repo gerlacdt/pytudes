@@ -6,7 +6,8 @@ import unittest
 class TestDay8(unittest.TestCase):
     def test_part1(self):
         input1 = myutils.readFile('./data/input8.txt')
-        result = day8.part1(input1)
-        expected = 4832
+        result1, result2 = day8.part12(input1)
+        expected1, expected2 = 4832, 5443
 
-        self.assertEqual(result, expected)
+        self.assertEqual(result1, expected1)
+        self.assertEqual(result2, expected2)

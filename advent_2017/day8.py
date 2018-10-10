@@ -35,11 +35,14 @@ def execute(registers, instr):
     return None
 
 
-def part1(s):
+def part12(s):
     instructions = parse(s)
     registers = {instr[0]: 0 for instr in instructions}
 
+    allTimeMax = 0
     for instr in instructions:
         execute(registers, instr)
+        currentMax = max(registers.values())
+        allTimeMax = currentMax if allTimeMax < currentMax else allTimeMax
 
-    return max(registers.values())
+    return max(registers.values()), allTimeMax
