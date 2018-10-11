@@ -1,48 +1,17 @@
-input1 = '''b inc 5 if a > 1
-a inc 1 if b < 5
-c dec -10 if a >= 1
-c inc -20 if c == 10
-'''
-
-
-def parse(s):
-    lines = s.splitlines()
-    data = [line.split() for line in lines]
-    return data
-
-
-def isTrue(registers, condition):
-    register, operator, value = condition
-
-    opTable = {'>': registers[register] > int(value),
-               '>=': registers[register] >= int(value),
-               '<': registers[register] < int(value),
-               '<=': registers[register] <= int(value),
-               '==': registers[register] == int(value),
-               '!=': registers[register] != int(value)}
-
-    return opTable[operator]
-
-
-def execute(registers, instr):
-    register, instr, value, _, *condition = instr
-    if instr == 'inc':
-        if isTrue(registers, condition):
-            registers[register] += int(value)
-    elif instr == 'dec':
-        if isTrue(registers, condition):
-            registers[register] -= int(value)
-    return None
+from collections import defaultdict
+from utils import Array, operations
 
 
 def part12(s):
-    instructions = parse(s)
-    registers = {instr[0]: 0 for instr in instructions}
+    lines = s.splitlines()
+    instructions = Array(lines)
+    registers = defaultdict(int)
 
-    allTimeMax = 0
-    for instr in instructions:
-        execute(registers, instr)
+    highest = 0
+    for (r, inc, delta, _if, r2, cmp, amount) in instructions:
+        if operations[cmp](registers[r2], amount):
+            registers[r] += delta * (+1 if inc == 'inc' else -1)
         currentMax = max(registers.values())
-        allTimeMax = currentMax if allTimeMax < currentMax else allTimeMax
+        highest = currentMax if highest < currentMax else highest
 
-    return max(registers.values()), allTimeMax
+    return max(registers.values()), highest
