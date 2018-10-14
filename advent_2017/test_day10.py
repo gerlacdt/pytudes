@@ -11,17 +11,15 @@ class TestDay10(unittest.TestCase):
 
     def test_hash_input1(self):
         LENGTHS = "76,1,88,148,166,217,130,0,128,254,16,2,130,71,255,229"
-        ARR = list(range(256))
 
-        result = day10.part1(ARR, LENGTHS)
+        result = day10.part1(LENGTHS)
         expected = 29240
         self.assertEqual(result, expected)
 
     def test_hash_small_input(self):
         LENGTHS = "3,4,1,5"
-        ARR = list(range(5))
 
-        result = day10.part1(ARR, LENGTHS)
+        result = day10.part1(LENGTHS, N=5)
         expected = 12
         self.assertEqual(result, expected)
 
@@ -35,6 +33,5 @@ class TestDay10(unittest.TestCase):
         }
 
         for input1, expected in tests.items():
-            ARR = list(range(256))
-            result = day10.part2(ARR, input1)
+            result = day10.part2(input1)
             self.assertEqual(result, expected, "{} failed".format(input1))

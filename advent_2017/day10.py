@@ -1,13 +1,12 @@
-from utils import grouper
+from utils import grouper, cat
 from functools import reduce
 from operator import xor
 
 
-def part1(arr, lengths):
-    # arr = list(range(256))
-    lengths = map(int, lengths.split(','))
-    skipsize = 0  # increase by 1 every iteration
-    currentIndex = 0
+def part1(stream, N=256):
+    arr = list(range(N))
+    lengths = map(int, stream.split(','))
+    currentIndex = skipsize = 0
 
     for l in lengths:
         arr = reverse(arr, currentIndex, l)
@@ -17,47 +16,31 @@ def part1(arr, lengths):
     return arr[0] * arr[1]
 
 
-def reverse(li, currentIndex, reverseLength):
-    liLength = len(li)
-    newIndex = currentIndex + (reverseLength - 1)
-    overshootIndex = newIndex - liLength
-
-    if newIndex < liLength:
-        li[currentIndex:newIndex+1] = li[currentIndex:newIndex+1][::-1]
-    else:
-        tmplist = li[currentIndex:] + li[:overshootIndex+1]
-        revlist = tmplist[::-1]
-
-        assert len(li[currentIndex:]) == len(revlist[:reverseLength - overshootIndex - 1])
-        li[currentIndex:] = revlist[:reverseLength - overshootIndex - 1]
-
-        assert len(li[:overshootIndex + 1]) == len(revlist[reverseLength - overshootIndex - 1:])
-        li[:overshootIndex + 1] = revlist[reverseLength - overshootIndex - 1:]
-    return li
+def reverse(nums, pos, L):
+    '''Norvig Solution: Reverse nums[pos:pos+L], handling wrap-around.
+    '''
+    # Move first pos elements to end, reverse first L, move pos elements back
+    nums = nums[pos:] + nums[:pos]
+    nums[:L] = reversed(nums[:L])
+    nums = nums[-pos:] + nums[:-pos]
+    return nums
 
 
-def part2(arr, lengths):
-    # arr = list(range(256))
-    lengths = [ord(c) for c in lengths]
-    lengths += [17, 31, 73, 47, 23]
+def part2(stream, N=256, rounds=64, suffix=[17, 31, 73, 47, 23]):
+    arr = list(range(N))
+    lengths = [ord(c) for c in stream]
+    lengths += suffix
 
-    skipsize = 0  # increase by 1 every iteration
-    currentIndex = 0
+    skipsize = currentIndex = 0
 
-    # loop 64 times the get the sparse hash
-    for i in range(64):
+    for i in range(rounds):
         for l in lengths:
             arr = reverse(arr, currentIndex, l)
             currentIndex = (currentIndex + l + skipsize) % len(arr)
             skipsize += 1
 
-    # get dense hash
-    chunks = list(grouper(arr, 16, 99999))
+    # dense hash
+    chunks = list(grouper(arr, 16))
     xorChunks = [reduce(lambda x, y: xor(x, y), chunk) for chunk in chunks]
 
-    def toHex(acc, x):
-        if x < 16:
-            return acc + '0' + hex(x)[2:]
-        return acc + hex(x)[2:]
-
-    return reduce(toHex, xorChunks, '')
+    return cat(map(lambda item: "{:02x}".format(item), xorChunks))
