@@ -2,6 +2,7 @@
 
 from collections import deque, Counter
 from utils import Ø, groupby, flatten, first
+from myutils import dfs
 import re
 
 
@@ -56,44 +57,13 @@ to other keys))
     return acc
 
 
-def dfs(graph, node, collectFn=lambda graph, n: getKey(n)):
-    '''Run through the given tree/graph and collect all visited nodes.'''
-    stack = [node]  # start with given node
-    visited = set()
-    collected = []
-
-    # loop as long as stack is non-empty
-    while stack:
-        v = stack.pop()
-        if getKey(v) not in visited:
-            visited.add(getKey(v))
-            collected.append(collectFn(graph, v))
-            for n in [graph[key] for key in getAdjacents(v)]:
-                stack.append(n)
-    return collected
-
-
-def bfs(graph, node, collectFn=lambda graph, n, parent: getKey(n)):
-    queue = deque([(None, node)])
-    visited = set()
-    collected = []
-
-    while queue:
-        parent, v = queue.popleft()
-        visited.add(getKey(v))
-        collected.append(collectFn(graph, v, parent))
-        for n in [graph[key] for key in getAdjacents(v)]:
-            queue.append((v, n))
-    return collected
-
-
 def findRoot(s):
     tree = build_tree(s)
     length = len(tree)
 
     # for all nodes try dfs, if len(visited) == len(tree) must be the root
     for key, node in tree.items():
-        visited = dfs(tree, node)
+        visited = dfs(tree, node, getKey, getAdjacents)
         if len(visited) == length:
             return node
 
