@@ -1,44 +1,17 @@
-DIRECTIONS = ('n', 'ne', 'se', 's', 'sw', 'nw')  # directions, ordered clockwise
+from utils import king_distance, origin, add
+
+input1 = 'ne,ne,ne'
+
+headings6 = dict(n=(0, -1), ne=(1, 0), se=(1, 1),
+                 s=(0, 1), sw=(-1, 0), nw=(-1, -1))
 
 
-def parent(direction):
-    opposites = {
-        'n': 's',
-        's': 'n',
-        'ne': 'sw',
-        'sw': 'ne',
-        'nw': 'se',
-        'se': 'nw'
-    }
-    return opposites[direction]  # KeyError if direction not found
-
-
-def createNumberGenerator():
-    '''Creates a sequential number generator. Alyways increments by one
-for the next call.'''
-    counter = 0
-    while True:
-        counter += 1
-        yield counter
-
-
-def build_graph(directions):
-    graph = {}
-    # build graph with 5 children (n, nw, ne, s, sw, se) and parent
-    # root has no parent
-    # assign a unique to key to every node
-
-    # parent is always opposite directions
-
-    return graph
-
-
-def hexes(input1):
-    # readFile and return tuples of directions
-
-    # build_graph()
-
-    # bfs() goal is last node during graph building
-
-    # bfs finds shortest path (if not try A* star?!?)
-    return None
+def follow(input1):
+    "Follow each step of the path; return final distance to origin."
+    path = input1.rstrip('\n').split(',')
+    pos = origin
+    maxDistance = 0
+    for dir in path:
+        pos = add(pos, headings6[dir])
+        maxDistance = king_distance(pos) if king_distance(pos) > maxDistance else maxDistance
+    return king_distance(pos), maxDistance
