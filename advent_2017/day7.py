@@ -61,9 +61,12 @@ def findRoot(s):
     tree = build_tree(s)
     length = len(tree)
 
-    # for all nodes try dfs, if len(visited) == len(tree) must be the root
+    def successorFn(tree):
+        return lambda key: getAdjacents(tree[key])
+
     for key, node in tree.items():
-        visited = dfs(tree, node, getKey, getAdjacents)
+        visited = dfs(tree, node, getKey, successorFn(tree))
+        # for all nodes try dfs, if len(visited) == len(tree) must be the root
         if len(visited) == length:
             return node
 

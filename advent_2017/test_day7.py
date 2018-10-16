@@ -38,3 +38,11 @@ cntj (57)
         expected = {'uownj'}
 
         self.assertEqual(result, expected)
+
+
+    def test_norvig_tree_input(self):
+        input1 = myutils.readFile('./data/input7.txt')
+        result = day7.norvig_part2(input1)
+        expected = 596
+
+        self.assertEqual(result, expected)

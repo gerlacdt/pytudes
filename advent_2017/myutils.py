@@ -18,29 +18,29 @@ def dfs(graph, node, keyFn, successorsFn):
     '''Do a depth-first-search on the given graph from the given node and
 return all visited nodes.
     '''
-    stack = [node]  # start with given node
+    stack = [keyFn(node)]  # start with given node
     visited = set()
 
     # loop as long as stack is non-empty
     while stack:
         v = stack.pop()
-        if keyFn(v) not in visited:
-            visited.add(keyFn(v))
-            for n in [graph[key] for key in successorsFn(v)]:
-                stack.append(n)
+        if v not in visited:
+            visited.add(v)
+            for key in successorsFn(v):
+                stack.append(key)
     return visited
 
 
 def bfs(graph, node, keyFn, successorsFn):
     '''Do a breath-first-search on the given graph from the given node and
 return all visited nodes.'''
-    queue = deque([(None, node)])
+    queue = deque([keyFn(node)])
     visited = set()
 
     while queue:
-        parent, v = queue.popleft()
-        if keyFn(v) not in visited:
-            visited.add(keyFn(v))
-            for n in [graph[key] for key in successorsFn(v)]:
-                queue.append((v, n))
+        v = queue.popleft()
+        if v not in visited:
+            visited.add(v)
+            for key in successorsFn(v):
+                queue.append(key)
     return visited
