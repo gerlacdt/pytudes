@@ -1,69 +1,30 @@
-import re
-
-# build data structures: firewall, packet
-
-input1 = '''0: 3
-1: 2
-4: 4
-6: 4
-'''
-
-UP = 'UP'
-DOWN = 'DOWN'
+from utils import mapt, Integers, first, count_from
 
 
-EMPTY_LAYER = ('UP', 0, 0)
+def read(content):
+    "Return input tuples ((depth, range), ...)"
+    return mapt(Integers, content.splitlines())
 
 
-def toggle(direction):
-    d = {
-        'UP': 'DOWN',
-        'DOWN': 'UP'
-    }
-    return d[direction]
+def trip_severity(scanners):
+    "The sum of severities for each time the packet is caught."
+    return sum((d * w if caught(d, w) else 0)
+               for (d, w) in scanners)
 
 
-def tick(layer):
-    """Advance one step of the firewall layer. Take current depth and
-    increment it or if at the end reverse.
-    """
-    direction, scanning_range, idx = layer
-    if direction == 'UP' and idx < scanning_range - 1:
-        idx += 1
-        return (direction, scanning_range, idx)
-    if direction == "DOWN" and idx > 0:
-        idx -= 1
-        return (direction, scanning_range, idx)
-    if direction == 'UP' and idx == scanning_range - 1:
-        idx -= 1
-        return (toggle(direction), scanning_range, idx)
-    if direction == 'DOWN' and idx == 0:
-        idx += 1
-        return (toggle(direction), scanning_range, idx)
-    raise RuntimeError("Invalid layer: {}".format(layer))
+def caught(depth, width):
+    "Does the scanner at this depth/width catch the packet?"
+    return depth % (2 * (width - 1)) == 0
 
 
-def scanner(content):
-    firewall = []
-    lines = content.splitlines()
-    for line in lines:
-        depth, n = re.findall(r'\w+', line)
-        # create layer as tuple (direction, range, currentIndex)
-        layer = (UP, int(n), 0)
-        if int(depth) > len(firewall):
-            filler = [EMPTY_LAYER for i in range(len(firewall), int(depth))]
-            firewall += filler
-        firewall.append(layer)
 
-    # runner
-    position = 0
-    acc = 0
-    for depth, layer in enumerate(firewall):
-        _direction, scanning_range, layer_idx = layer
-        if position == layer_idx:
-            acc += depth * scanning_range
-        # tick all
-        for i, rlayer in enumerate(firewall):
-            if rlayer != EMPTY_LAYER:
-                firewall[i] = tick(rlayer)
-    return acc
+# part 2
+
+def caught_delay(depth, width, delay=0):
+    "Does the scanner at this depth/width catch the packet with this delay?"
+    return (depth + delay) % (2 * (width - 1)) == 0
+
+def safe_delay(scanners):
+    "Find the first delay such that no scanner catches the packet."
+    safe = lambda delay: not any(caught_delay(d, w, delay) for (d, w) in scanners)
+    return first(filter(safe, count_from(0)))
