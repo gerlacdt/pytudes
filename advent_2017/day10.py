@@ -44,3 +44,6 @@ def part2(stream, N=256, rounds=64, suffix=[17, 31, 73, 47, 23]):
     xorChunks = [reduce(lambda x, y: xor(x, y), chunk) for chunk in chunks]
 
     return cat(map(lambda item: "{:02x}".format(item), xorChunks))
+
+
+knothash = part2
