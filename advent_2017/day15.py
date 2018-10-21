@@ -1,6 +1,7 @@
-def judge(startA, startB, factorA=16807, factorB=48271, N=5):
-    genA = gen(startA, factorA)
-    genB = gen(startB, factorB)
+def judge(startA, startB, factorA=16807, factorB=48271, multipliesA=1,
+          multipliesB=1, N=5):
+    genA = gen(startA, factorA, multipliesA)
+    genB = gen(startB, factorB, multipliesB)
     acc = 0
     for i in range(N):
         valA = next(genA)
@@ -12,13 +13,14 @@ def judge(startA, startB, factorA=16807, factorB=48271, N=5):
     return acc
 
 
-def gen(start, factor):
+def gen(start, factor, multiplies=1):
     divider = 2147483647
     val = start
     while True:
         t = val * factor
         val = t % divider
-        yield val
+        if val % multiplies == 0:
+            yield val
 
 
 def toBin(n):
