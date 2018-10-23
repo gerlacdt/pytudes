@@ -1,7 +1,4 @@
-from utils import cat
-
-input1 = "s1,x3/4,pe/b"
-input2 = "s1,x14/15,pe/b"
+from utils import cat, cache
 
 
 def parse(input1):
@@ -9,6 +6,7 @@ def parse(input1):
     return commands
 
 
+@cache
 def execute(command, progs):
     """Execute given command on programs. sX rotates X to the left"""
     c = command[0]
@@ -37,9 +35,24 @@ def execute(command, progs):
 PROGRAMS = "abcdefghijklmnop"
 
 
-def dance(input1, programs=PROGRAMS):
+def dance(input1, programs=PROGRAMS, N=1):
     commands = parse(input1)
     progs = programs
-    for c in commands:
-        progs = execute(c, progs)
+    for i in range(N):
+        for j, c in enumerate(commands):
+            progs = execute(c, progs)
+    return progs
+
+
+def whole_dance(input1, programs=PROGRAMS, N=10**9):
+    """Idea for N = one billion: Observation every 36 iterations the
+start-input re-appears. Hence we can use the following formula:
+N % 36 runs are needed. For 1 billion 28 runs.
+    """
+    commands = parse(input1)
+    progs = programs
+
+    for i in range(N % 36):
+        for j, c in enumerate(commands):
+            progs = execute(c, progs)
     return progs
