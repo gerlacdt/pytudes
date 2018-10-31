@@ -43,6 +43,7 @@ def tubes(input1):
     direction = "DOWN"
     pos = (0, start)
     collected = []
+    steps = 0
 
     def apply(heading):
         nonlocal direction
@@ -87,7 +88,8 @@ def tubes(input1):
         char = lines[pos[0]][pos[1]]
         heading = getHeading(direction)
         pos = apply(heading)
+        steps += 1
         if not pos:
             break
 
-    return cat(collected)
+    return cat(collected), steps - 1
