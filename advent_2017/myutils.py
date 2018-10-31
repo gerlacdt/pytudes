@@ -44,3 +44,13 @@ return all visited nodes.'''
             for key in successorsFn(v):
                 queue.append(key)
     return visited
+
+
+def border(fill, grid):
+    """Surround a grid with a border of fill cells. The rows in the grid
+    should be of even length, e.g: border(' ', ['abc', 'efg'])
+    """
+    rows  = [[fill] + list(row) + [fill]
+             for row in grid]
+    empty =  [fill] * len(rows[0])
+    return [empty] + rows + [empty]
