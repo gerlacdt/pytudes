@@ -45,18 +45,18 @@ def tubes(input1):
     collected = []
     steps = 0
 
-    def apply(heading):
+    def move(heading):
         nonlocal direction
         char = lines[pos[0]][pos[1]]
         if char == "|" or char == "-":
             # keep directions
             return (pos[0]+heading[0], pos[1]+heading[1])
         elif char in LETTERS:
-            #keep directions but collect letter
+            # keep directions but collect letter
             collected.append(char)
             return (pos[0]+heading[0], pos[1]+heading[1])
         elif char == "+":
-            # change direction, only 1 should be valid
+            # change direction
             if direction == "UP" or direction == "DOWN":
                 # go left or right
                 r = newPos(lines, pos, RIGHT)
@@ -84,10 +84,9 @@ def tubes(input1):
         return None
 
     while pos[0] >= 0 and pos[0] < len(lines):
-        # move
         char = lines[pos[0]][pos[1]]
         heading = getHeading(direction)
-        pos = apply(heading)
+        pos = move(heading)
         steps += 1
         if not pos:
             break
