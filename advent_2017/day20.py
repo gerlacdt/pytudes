@@ -38,3 +38,17 @@ def swarm(input1=input1):
         minIndex = distances.index(min(distances))
 
     return minIndex
+
+
+def collision(input1):
+    lines = input1.splitlines()
+    particles = [Integers(line) for line in lines]
+    distances = [distance((p[0], p[1], p[2])) for p in particles]
+    minIndex = -1
+
+    for i in range(1000):
+        tick(particles)
+        # check collisions of particles
+        # remove collided particles
+
+    return len(particles)
