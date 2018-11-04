@@ -22,7 +22,7 @@ def duet(input1):
         elif o == 'set': registers[x] = vy
         elif o == 'add': registers[x] += vy
         elif o == 'mul': registers[x] *= vy
-        elif o == 'mod': registers[x] %=  vy
+        elif o == 'mod': registers[x] %= vy
         elif o == 'jgz' and registers[x] > 0: pc += vy - 1
         elif o == 'rcv' and registers[x] != 0: return snd
         pc += 1

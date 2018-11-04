@@ -54,6 +54,7 @@ def burst2(net, N=0):
     "Run N steps of bursts on the network depicted by `lines`."
     (current, heading, caused, infected) = net
     status = defaultdict(lambda: 'C', {pos: 'I' for pos in infected})
+    print(status)
     for _ in range(N):
         S = status[current]
         if S == 'C':
