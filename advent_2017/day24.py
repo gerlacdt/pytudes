@@ -1,4 +1,6 @@
 from myutils import readFile
+from utils import Integers, flatten
+from collections import defaultdict
 
 
 input1 = """0/2
@@ -74,3 +76,44 @@ def bridge(input1):
 
 assert(bridge(input1) == (31, 19))
 # assert(bridge(INPUT1) == 1906, 1824)
+
+
+# norvigs solution
+
+
+def component_table(pairs):
+    "Make a table of {port: {components_with_that_port}"
+    print(pairs)
+    ctable = defaultdict(set)
+    for pair in pairs:
+        ctable[pair[0]].add(pair)
+        ctable[pair[1]].add(pair)
+    return ctable
+
+ctable = component_table(map(Integers, INPUT1.splitlines()))
+
+
+def other_port(component, port):
+    "The other port in a two-port component."
+    return (component[1] if component[0] == port else component[0])
+
+
+def strength2(chain):
+    return sum(flatten(chain))
+
+
+def chains(chain=(), port=0, ctable=ctable):
+    "Given a partial chain ending in `port`, yield all chains that extend it."
+    yield chain
+    for c in ctable[port]:
+        if c not in chain:
+            # Extend with components, c, that match port but are not already in chain
+            yield from chains(chain + (c,), other_port(c, port), ctable)
+
+
+def length_and_strength(c):
+    return len(c), strength(c)
+
+
+# assert(strength2(max(chains(), key=strength2)) == 1906)
+# assert(length_and_strength(max(chains(), key=length_and_strength)) == 1824)
