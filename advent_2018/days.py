@@ -73,3 +73,33 @@ def string_diff(s1, s2):
             difference += 1
             indices.append(i)
     return difference, indices
+
+
+def day3_part12():
+    lines = Inputstr(3).splitlines()
+    markedPositions = defaultdict(int)
+    claims = []
+    for line in lines:
+        id, _ , pos, area = line.split(" ")
+        pos, area = Integers(pos), Integers(area.replace("x", ","))
+        claims.append((id, pos, area))
+        x, y = pos
+        xs, ys = area
+        for i in range(xs):
+            for j in range(ys):
+                newpos = (x+i, y+j)
+                markedPositions[newpos] += 1
+
+    overlaps = len({k: v for k, v in markedPositions.items() if v > 1})
+
+    # find no overlapping claim
+    for c in claims:
+        id, pos, area = c
+        x, y = pos
+        xs, ys = area
+        no_overlap = all([markedPositions[(x+i, y+j)] == 1
+                          for i in range(xs)
+                          for j in range(ys)])
+        if no_overlap:
+            return overlaps, int(id[1:])
+    return None
