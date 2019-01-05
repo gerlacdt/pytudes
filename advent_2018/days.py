@@ -1,4 +1,5 @@
-from utils import Integers, mapt, Inputstr, cat
+import operator
+from utils import Array, Integers, mapt, Inputstr, cat
 from collections import defaultdict, Counter
 
 
@@ -103,3 +104,95 @@ def day3_part12():
         if no_overlap:
             return overlaps, int(id[1:])
     return None
+
+
+# day4
+
+
+day4_test_input = """[1518-11-01 00:00] Guard #10 begins shift
+[1518-11-01 00:05] falls asleep
+[1518-11-01 00:25] wakes up
+[1518-11-01 00:30] falls asleep
+[1518-11-01 00:55] wakes up
+[1518-11-01 23:58] Guard #99 begins shift
+[1518-11-02 00:40] falls asleep
+[1518-11-02 00:50] wakes up
+[1518-11-03 00:05] Guard #10 begins shift
+[1518-11-03 00:24] falls asleep
+[1518-11-03 00:29] wakes up
+[1518-11-04 00:02] Guard #99 begins shift
+[1518-11-04 00:36] falls asleep
+[1518-11-04 00:46] wakes up
+[1518-11-05 00:03] Guard #99 begins shift
+[1518-11-05 00:45] falls asleep
+[1518-11-05 00:55] wakes up
+"""
+
+input4 = Inputstr(4)
+
+
+def day4_sleep_schedule(content):
+    lines = sorted(content.splitlines())
+    current_guard = None
+    current_date = None
+    start_sleeping = 999
+    sleep_schedule = defaultdict(dict)
+    # collect all sleeping time for a guard from 00:00 to 00:59
+    for line in lines:
+        if "Guard" in line:
+            date, time, _, guard_id, *rest = line.split()
+            date = date[1:]
+            hour, minute = (int(x) for x in time[:-1].split(":"))
+            if hour != 0:
+                year, month, day = date.split("-")
+                day = int(day) + 1
+                date = "{}-{}-{:02d}".format(year, month, day)
+            start_sleeping = 999
+            current_date = date
+            current_guard = int(guard_id[1:])
+            if not sleep_schedule[current_guard]:
+                sleep_schedule[current_guard] = {}
+            sleep_schedule[current_guard][current_date] = [0] * 59
+        elif "asleep" in line:
+            date, time, *rest = line.split()
+            hour, minute = (int(x) for x in time[:-1].split(":"))
+            start_sleeping = minute
+        elif "wakes" in line:
+            date, time, *rest = line.split()
+            hour, minute = (int(x) for x in time[:-1].split(":"))
+            sleep_schedule[current_guard][current_date][start_sleeping:minute] = [1] * (minute - start_sleeping)
+        else:
+            raise RuntimeError("error in input line: {}".format(line))
+    return sleep_schedule
+
+
+def day4_part1(content=input4):
+    sleep_schedule = day4_sleep_schedule(content)
+    guards = {}
+    for guard, days in sleep_schedule.items():
+        guards[guard] = sum([Counter(schedule)[1] for schedule in days.values()])
+
+    max_guard = max(guards.items(), key=operator.itemgetter(1))[0]
+
+    # count frequency of sleeping minutes from 0 to 59 for all days of
+    # the most sleeping guard
+    minutes = [day for day in sleep_schedule[max_guard].values()]
+
+    zipped = list(zip(*minutes))
+    ranked = [sum(t) for t in zipped]
+
+    return max_guard * ranked.index(max(ranked))
+
+
+def day4_part2(content=day4_test_input):
+    sleep_schedule = day4_sleep_schedule(content)
+
+    max_sleep_minutes = {}
+    for guard, days in sleep_schedule.items():
+        minutes = [day for day in days.values()]
+        zipped = list(zip(*minutes))
+        ranked = [sum(t) for t in zipped]
+        max_sleep_minutes[guard] = ranked.index(max(ranked))
+
+    result = max(max_sleep_minutes.items(), key=operator.itemgetter(1))
+    return result, result[0] * result[1]
