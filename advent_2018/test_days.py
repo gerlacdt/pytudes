@@ -27,3 +27,12 @@ class TestAdvent(object):
         expected1, expected2 = 113716, 742
         assert result1 == expected1
         assert result2 == expected2
+
+
+    def test_day4(self):
+        result1, result2 = days.day4_part1(), days.day4_part2()
+
+        expected1, expected2 = 131469, 96951
+
+        assert result1 == expected1
+        assert result2 == expected2

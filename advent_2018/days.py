@@ -184,7 +184,7 @@ def day4_part1(content=input4):
     return max_guard * ranked.index(max(ranked))
 
 
-def day4_part2(content=day4_test_input):
+def day4_part2(content=input4):
     sleep_schedule = day4_sleep_schedule(content)
 
     max_sleep_minutes = {}
@@ -195,7 +195,7 @@ def day4_part2(content=day4_test_input):
         max_sleep_minutes[guard] = ranked.index(max(ranked))
 
     result = max(max_sleep_minutes.items(), key=operator.itemgetter(1))
-    return result, result[0] * result[1]
+    return result[0] * result[1]
 
 
 # day 5
