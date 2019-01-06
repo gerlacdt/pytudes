@@ -196,13 +196,3 @@ def day4_part2(content=input4):
 
     result = max(max_sleep_minutes.items(), key=operator.itemgetter(1))
     return result[0] * result[1]
-
-
-# day 5
-
-
-day5_test_input = "dabAcCaCBAcCcaDA"  # expected result is 10 units
-
-
-def day5_part1(content=day5_test_input):
-    return None
