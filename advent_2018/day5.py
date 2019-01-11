@@ -99,36 +99,22 @@ class DoubleLinkedList():
         return str(self.head)
 
 
-# def chain(arr):
-#     arr2 = arr[:]
-#     current = 1
-#     previous = 0
-#     while current < len(arr2):
-#         if react(arr2[previous], arr2[current]):
-#             arr2 = arr2[:previous] + arr2[current+1:]
-#             previous -= 1
-#             current -= 1
-#         else:
-#             previous += 1
-#             current += 1
-#     return len(arr2)
-
-
 def chain(arr):
     lst = DoubleLinkedList(arr)
-    current = lst.head.succ
     previous = lst.head
+    current = lst.head.succ
     while current:
         if react(previous.value, current.value):
             tmp_prev = previous
             previous = previous.previous
             current = current.succ
-            # print("delete prev: {}, prev_succ: {}".format(tmp_prev.value, tmp_prev.succ.value))
             lst.delete(tmp_prev.succ)
             lst.delete(tmp_prev)
         else:
             previous, current = current, current.succ
-        # print("".join(lst.to_list()))
+        if not previous:
+            previous = lst.head
+            current = lst.head.succ
     return len(lst.to_list())
 
 
@@ -150,7 +136,6 @@ def part2(content=test_input):
 
         # run reaction chain
         result = chain(arr2)
-        print("done for letter: {}".format(letter))
         if result < minimum:
             minimum = result
 

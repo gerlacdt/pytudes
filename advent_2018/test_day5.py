@@ -1,4 +1,4 @@
-from day5 import part1, DoubleLinkedList
+from day5 import part1, part2, input5, DoubleLinkedList
 
 
 class TestDay5():
@@ -16,7 +16,12 @@ class TestDay5():
             expected.remove(i)
             assert lst.to_list() == expected
 
-
-
     def test_part1(self):
-        pass
+        result = part1(input5)
+        expected = 11720
+        assert result == expected
+
+    def test_part2(self):
+        result = part2(input5)
+        expected = 4956
+        assert result == expected
