@@ -1,3 +1,4 @@
+import re
 from utils import Inputstr, letters
 
 test_input = "dabAcCaCBAcCcaDA"  # expected result is 10 units
@@ -140,3 +141,29 @@ def part2(content=test_input):
             minimum = result
 
     return minimum
+
+
+
+# norvigs solution
+
+alphabet = 'abcdefghijklmnopqrstuvwxyz'
+ALPHABET = alphabet.upper()
+
+OR = '|'.join
+reaction = OR(OR([c + C, C + c]) for c, C in zip(alphabet, ALPHABET))
+
+
+def reduction(text):
+    "Remove all cC or Cc pairs, and repeat."
+    while True:
+        text, n = re.subn(reaction, '', text)
+        if n == 0:
+            return text
+
+# reduction('dabAcCaCBAcCcaDA')
+def shortest(items): return min(items, key=len)
+def reduction2(text):
+    """What is the length of the shortest polymer you can produce by removing
+    all units of exactly one type and fully reacting the result?"""
+    return shortest(reduction(re.sub(c, '', text, flags=re.I))
+                    for c in alphabet)

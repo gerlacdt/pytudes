@@ -1,4 +1,4 @@
-from day5 import part1, part2, input5, DoubleLinkedList
+from day5 import part1, part2, input5, DoubleLinkedList, reduction2
 
 
 class TestDay5():
@@ -23,5 +23,10 @@ class TestDay5():
 
     def test_part2(self):
         result = part2(input5)
+        expected = 4956
+        assert result == expected
+
+    def test_part2_norvig(self):
+        result = len(reduction2(input5))
         expected = 4956
         assert result == expected
