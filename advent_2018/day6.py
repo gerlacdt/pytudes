@@ -67,5 +67,37 @@ def part1(content=test_input):
     return max(flat.count(valid) for valid in validIndices)
 
 
-def part2(content=test_input):
-    pass
+def getTotalDistance(point, coordinates):
+    total = 0
+    for c in coordinates:
+        total += manhatten_distance(point, c)
+    return total
+
+
+def part2(content=test_input, max_distance=32):
+    coordinates = [mapt(int, line.split(',')) for line in content.splitlines()]
+    coordinates = [(c[1], c[0]) for c in coordinates]  # switch y <-> x, so they match with list indices
+
+    maxy, miny = max(coordinates, key=lambda c: c[0])[0], min(coordinates, key=lambda c: c[0])[0]
+    maxx, minx = max(coordinates, key=lambda c: c[1])[1], min(coordinates, key=lambda c: c[1])[1]
+
+    # create grid-array
+    arr = [[] for i in range(maxy+1)]
+    for i in range(maxy+1):
+        for j in range(maxx+1):
+            arr[i].append(None)
+
+    # places coordinates in array
+    for i, c in enumerate(coordinates):
+        y, x = c
+        arr[y][x] = i
+
+
+    region = []
+    for y in range(maxy+1):
+        for x in range(maxx+1):
+            p = (y, x)
+            if max([getTotalDistance(p, coordinates)]) < max_distance:
+                region.append(p)
+
+    return len(region)
