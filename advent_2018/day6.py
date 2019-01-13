@@ -19,7 +19,7 @@ a tuple with 2 integers."""
     return abs(x1-x2) + abs(y1-y2)
 
 
-def getMinIndex(distances):
+def getMinCoordinate(distances):
     minimum = min(distances)
     if distances.count(minimum) > 1:
         return -1
@@ -53,7 +53,7 @@ def part1(content=test_input):
             if arr[y][x] != -1:
                 # calculate nearest chronal coordinate, if there are more than 1 leave field as None
                 distances = [manhatten_distance(c, (y,x)) for c in coordinates]
-                arr[y][x] = getMinIndex(distances)
+                arr[y][x] = getMinCoordinate(distances)
 
     # get non-infinite indexes, i.e. they don't appear at border x ==
     # 0, y == 0, y == maxy, x == maxx
@@ -65,3 +65,7 @@ def part1(content=test_input):
 
     flat = list(flatten(arr))
     return max(flat.count(valid) for valid in validIndices)
+
+
+def part2(content=test_input):
+    pass
