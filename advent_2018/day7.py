@@ -1,7 +1,6 @@
 from utils import Inputstr, cat
 from collections import defaultdict, deque
-import re
-
+from itertools  import count as count_from
 
 input7 = Inputstr(7)
 
@@ -15,6 +14,11 @@ Step F must be finished before step E can begin.
 """
 
 
+def getPairs(content=test_input):
+    lines = content.splitlines()
+    steps = [line.split() for line in lines]
+    return [(s[1], s[7]) for s in steps]
+
 # norvig solution
 def multimap(items):
     "Given (key, val) pairs, return {key: [val, ....], ...}."
@@ -24,10 +28,10 @@ def multimap(items):
     return result
 
 
-def order(content=test_input):
-    lines = content.splitlines()
-    steps = [line.split() for line in lines]
-    pairs = [(s[1], s[7]) for s in steps]
+def maxval(dic): return max(dic.values())
+
+
+def order(pairs):
     "Yield steps in order, respecting (before, after) pairs; break ties lexically."
     steps = {step for pair in pairs for step in pair} # Steps remaining to be done
     prereqs = multimap((A, B) for [B, A] in pairs)    # prereqs[A] = [B, ...]
@@ -36,3 +40,31 @@ def order(content=test_input):
         step = min(filter(ready, steps))
         steps.remove(step)
         yield step
+
+
+infinity = float('inf')
+
+
+def quantify(iterable, pred=bool):
+    "Count how many times the predicate is true of an item in iterable."
+    return sum(map(pred, iterable))
+
+
+def schedule(pairs, workers=5):
+    "Return a {step:endtime} map for best schedule, given a number of `workers`."
+    steps = {step for pair in pairs for step in pair} # Steps remaining to be done
+    prereqs = multimap((A, B) for (B, A) in pairs)    # prereqs[A] = [B, ...]
+    endtime = {step: infinity for step in steps}      # endtime[step] = time it will be completed
+    for t in count_from(0):
+        # Assign available steps to free workers
+        def ready(step): return all(endtime[p] < t for p in prereqs[step])
+        available = filter(ready, steps)
+        for step in sorted(available)[:workers]:
+            endtime[step] = t + 60 + ord(step) - ord('A')
+            steps.remove(step)
+            workers -= 1
+        # Discover if any workers become free this time step
+        workers += quantify(endtime[step] == t for step in endtime)
+        # Return answer once all steps have been scheduled
+        if not steps:
+            return endtime
