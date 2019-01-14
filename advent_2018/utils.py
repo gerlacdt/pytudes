@@ -308,7 +308,25 @@ def Astar(start, moves_func, h_func, cost_func=always(1)):
                 path_cost[s2] = g
                 previous[s2] = s
 
+
 def bfs(start, moves_func, goals):
     "Breadth-first search"
     goal_func = (goals if callable(goals) else lambda s: s in goals)
     return Astar(start, moves_func, lambda s: (0 if goal_func(s) else 1))
+
+
+# 2018 utils
+
+
+infinity = float('inf')
+
+
+def multimap(items):
+    "Given (key, val) pairs, return {key: [val, ....], ...}."
+    result = defaultdict(list)
+    for (key, val) in items:
+        result[key].append(val)
+    return result
+
+
+def maxval(dic): return max(dic.values())

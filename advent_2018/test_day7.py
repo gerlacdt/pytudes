@@ -1,5 +1,5 @@
-from day7 import schedule, order, input7, getPairs, maxval
-from utils import cat
+from day7 import schedule, order, input7, getPairs
+from utils import cat, maxval
 
 
 class TestDay7():

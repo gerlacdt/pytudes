@@ -1,5 +1,5 @@
-from utils import Inputstr, cat
-from collections import defaultdict, deque
+from utils import Inputstr, cat, quantify, multimap, infinity
+from collections import defaultdict
 from itertools  import count as count_from
 
 input7 = Inputstr(7)
@@ -14,21 +14,14 @@ Step F must be finished before step E can begin.
 """
 
 
+# norvig solution
+
+
 def getPairs(content=test_input):
     lines = content.splitlines()
     steps = [line.split() for line in lines]
     return [(s[1], s[7]) for s in steps]
 
-# norvig solution
-def multimap(items):
-    "Given (key, val) pairs, return {key: [val, ....], ...}."
-    result = defaultdict(list)
-    for (key, val) in items:
-        result[key].append(val)
-    return result
-
-
-def maxval(dic): return max(dic.values())
 
 
 def order(pairs):
@@ -40,14 +33,6 @@ def order(pairs):
         step = min(filter(ready, steps))
         steps.remove(step)
         yield step
-
-
-infinity = float('inf')
-
-
-def quantify(iterable, pred=bool):
-    "Count how many times the predicate is true of an item in iterable."
-    return sum(map(pred, iterable))
 
 
 def schedule(pairs, workers=5):
