@@ -25,3 +25,6 @@ class TestDay9():
         result = solve1(nplayers, nmarbles)
 
         assert result == expected
+
+    def test_part2(self):
+        pass

@@ -1,4 +1,4 @@
-from collections import deque
+from collections import deque, Counter
 from utils import Inputstr
 
 
@@ -29,3 +29,29 @@ def solve1(nplayers=9, nmarbles=25):
         # print("index: {}, player: {}, queue: {}".format(currentMarbleIndex, player, q))
 
     return max(scores)
+
+
+
+
+# norvig's faster solution, needed for part 2
+
+players = 411
+marbles = 71058 * 100
+expected = 3516007333
+
+
+def play(players, marbles, verbose=False):
+    "Add `marbles` to `circle`, rotating according to rules and scoring every 23 marbles."
+    circle = deque([0])
+    scores = Counter()
+    for m in range(1, marbles):
+        player = (m - 1) % players + 1
+        if m % 23:
+            circle.rotate(-1)
+            circle.append(m)
+        else:
+            circle.rotate(+7)
+            scores[player] += circle.pop() + m
+            circle.rotate(-1)
+        if verbose: print(player, list(circle))
+    return max(scores.values())
