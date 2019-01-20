@@ -26,3 +26,30 @@ def solve1(content=test_input):
     data = deque([int(s) for s in content.split(" ")])
     metadata = process(data)
     return metadata
+
+
+def process2(data):
+    def helper():
+        nchildren, nmetadata = data.popleft(), data.popleft()
+        if nchildren == 0:
+            value = 0
+            for n in range(nmetadata):
+                value += data.popleft()
+            return value
+        else:
+            child_values = []
+            for c in range(nchildren):
+                child_values.append(helper())
+            value = 0
+            for n in range(nmetadata):
+                metadata = data.popleft()
+                if metadata-1 < nchildren:
+                    value += child_values[metadata-1]
+            return value
+    return helper()
+
+
+def solve2(content=test_input):
+    data = deque([int(s) for s in content.split(" ")])
+    metadata = process2(data)
+    return metadata
