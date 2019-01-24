@@ -13,13 +13,21 @@ def power(serial, coord):
     return level
 
 
-def max_total(grid):
+def total2(grid, pos, n):
+    x, y = pos
+    totals = []
+    for i in range(3, n+1):
+        total = sum([grid[y2][x2] for y2 in range(y, y+i)
+                     for x2 in range(x, x+i)])
+        totals.append((total, pos))
+    return max(totals)
+
+
+def max_total(grid, n):
     levels = []
-    for y in range(len(grid)-2):
-        for x in range(len(grid)-2):
-            total = sum([grid[y2][x2] for y2 in range(y, y+3)
-                         for x2 in range(x, x+3)])
-            levels.append((total, (x, y)))
+    for y in range(len(grid)-(n-1)):
+        for x in range(len(grid)-(n-1)):
+            levels.append(total2(grid, (x, y), n))
     total, (x, y) = max(levels)
     return total, (x+1, y+1)
 
@@ -35,4 +43,9 @@ def gen_grid(serial, n):
 
 def part1(serial=test_serial, n=300):
     grid = gen_grid(serial, n)
-    return max_total(grid)
+    return max_total(grid, 3)
+
+
+def part2(serial=test_serial, n=300):
+    grid = gen_grid(serial, n)
+    return max_total(grid, 16)
