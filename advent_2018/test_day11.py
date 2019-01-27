@@ -1,15 +1,13 @@
-from day11 import part1, part2, input11
+from day11 import maxpower
 
 
 class TestDay11():
     def test_part1(self):
-        result = part1(input11)
-        expected = (30, (20, 50))
-
+        result = maxpower()
+        expected = (30, (20, 50), 3)
         assert result == expected
 
-    # def test_part2(self):
-    #     result = part2(input11)
-    #     expected = (30, (20, 50))
-
-    #     assert result == expected
+    def test_part2(self):
+        result = max(maxpower(width=w) for w in range(300))
+        expected = (88, (238, 278), 9)
+        assert result == expected

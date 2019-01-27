@@ -330,3 +330,8 @@ def multimap(items):
 
 
 def maxval(dic): return max(dic.values())
+
+
+def rangei(start, end, step=1):
+    """Inclusive, range from start to end: rangei(a, b) = range(a, b+1)."""
+    return range(start, end + 1, step)

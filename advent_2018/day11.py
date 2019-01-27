@@ -1,51 +1,42 @@
-input11 = 2866
-test_serial = 8
+from itertools import product
+from collections import defaultdict
+from utils import rangei, X, Y
+
+serial = input11 = 2866
+
+# norvig's solution
+
+def power_level(point):
+    "Follow the rules for power level."
+    id = X(point) + 10
+    level = (id * Y(point) + serial) * id
+    return (level // 100) % 10 - 5
 
 
-def power(serial, coord):
-    x, y = coord
-    rackId = x + 10
-    level = rackId * y
-    level += serial
-    level *= rackId
-    level = (level // 100) % 10
-    level -= 5
-    return level
+def total_power(topleft, width=3):
+    "Total power in the square with given topleft corner and width."
+    x, y = topleft
+    square = product(range(x, x + width), range(y, y + width))
+    return sum(map(power_level, square))
 
 
-def total2(grid, pos, n):
-    x, y = pos
-    totals = []
-    for i in range(3, n+1):
-        total = sum([grid[y2][x2] for y2 in range(y, y+i)
-                     for x2 in range(x, x+i)])
-        totals.append((total, pos))
-    return max(totals)
+def maxpower(bounds=300, width=3):
+    "Return (power, topleft, width) of square within `bounds` of maximum power."
+    toplefts = product(rangei(1, bounds - width), repeat=2)
+    return max((total_power2(topleft, width), topleft, width)
+               for topleft in toplefts)
 
 
-def max_total(grid, n):
-    levels = []
-    for y in range(len(grid)-(n-1)):
-        for x in range(len(grid)-(n-1)):
-            levels.append(total2(grid, (x, y), n))
-    total, (x, y) = max(levels)
-    return total, (x+1, y+1)
+def summed_area(side, key):
+    "A summed-area table. See: https://en.wikipedia.org/wiki/Summed-area_table"
+    I = defaultdict(int)
+    for x, y in product(side, side):
+        I[x, y] = key((x, y)) + I[x, y - 1] + I[x - 1, y] - I[x - 1, y - 1]
+    return I
 
 
-def gen_grid(serial, n):
-    grid = []
-    for y in range(n):
-        grid.append([])
-        for x in range(n):
-            grid[y].append(power(serial, (x+1, y+1)))
-    return grid
-
-
-def part1(serial=test_serial, n=300):
-    grid = gen_grid(serial, n)
-    return max_total(grid, 3)
-
-
-def part2(serial=test_serial, n=300):
-    grid = gen_grid(serial, n)
-    return max_total(grid, 16)
+def total_power2(topleft, width=3, I=summed_area(rangei(1, 300), power_level)):
+    "Total power in square with given topleft corner and width (from `I`)."
+    x, y = topleft
+    xmin, ymin, xmax, ymax = x - 1, y - 1, x + width - 1, y + width - 1
+    return I[xmin, ymin] + I[xmax, ymax] - I[xmax, ymin] - I[xmin, ymax]
