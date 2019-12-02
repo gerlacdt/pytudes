@@ -22,11 +22,14 @@ def execute(code, opcode, op1, op2):
 
 
 def part1(code, replace=True):
+    return run(code[:], (12, 2))
+
+
+def run(code, pair):
     opcode = code[0]
     i = 0
-    if replace:
-        code[1] = 12
-        code[2] = 2
+    code[1] = pair[0]
+    code[2] = pair[1]
     while True:
         opcode = code[i]
         if opcode not in OPCODES:
@@ -40,17 +43,23 @@ def part1(code, replace=True):
     return code[0]  # result is the first number in programm
 
 
+def part2(code, output=19690720):
+    for i in range(100):
+        for j in range(100):
+            if output == run(code[:], (i, j)):
+                return (i, j)
+    return None
+
+
 def test():
     actual = part1(list(getInput()))
     expected = 5866714
     assert actual == expected
 
 
-def testSimple():
-    actual = part1([1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50], False)
-    expected = 3500
+def testPart2():
+    actual = part2(list(getInput()))
+    expected = (52, 8)
     assert actual == expected
-
-    actual = part1([1, 1, 1, 4, 99, 5, 6, 0, 99], False)
-    expected = 30
-    assert actual == expected
+    noun, verb = actual
+    assert (100 * noun) + verb == 5208
