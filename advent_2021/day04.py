@@ -113,7 +113,6 @@ def test_bingo():
 def test_bingo_final_example():
     nums, boards = getBoard(test_input)
     for result in bingo(nums, boards):
-        print("result: {}".format(result))
         actual = result
 
     expected = 1924
