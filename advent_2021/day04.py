@@ -121,8 +121,6 @@ def test_bingo_final_example():
 
 def test_bingo_final():
     nums, boards = getBoard(utils.Inputstr("04"))
-    for result in bingo(nums, boards):
-        actual = result
-
+    *_, actual = bingo(nums, boards)
     expected = 12833
     assert actual == expected
