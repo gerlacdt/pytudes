@@ -33,7 +33,7 @@ def test1():
 def test2():
     depths = getInput()
     actual = sonarSlidingWindow(depths)
-    assert actual == 606
+    assert actual == 1739
 
 
 def test2_example():
