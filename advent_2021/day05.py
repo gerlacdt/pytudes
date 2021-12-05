@@ -52,28 +52,28 @@ def vents(lines, diagonal=False):
                 if grid[y1][j] == 1:
                     result += 1
                 grid[y1][j] += 1
-        else:
-            if diagonal:
-                # go diagonal
-                negative_slope = False
-                if x2 < x1 and y2 < y1:
-                    x2, x1 = x1, x2
-                    y2, y1 = y1, y2
-                elif x2 > x1 and y2 < y1:
-                    negative_slope = True
-                elif x2 < x1 and y2 > y1:
-                    x2, x1 = x1, x2
-                    y2, y1 = y1, y2
-                    negative_slope = True
-                i = y1
-                j = x1
+        elif diagonal:
+            # prepare coordinates for easier diagonal walk
+            negative_slope = False
+            if x2 < x1 and y2 < y1:
+                x2, x1 = x1, x2
+                y2, y1 = y1, y2
+            elif x2 > x1 and y2 < y1:
+                negative_slope = True
+            elif x2 < x1 and y2 > y1:
+                x2, x1 = x1, x2
+                y2, y1 = y1, y2
+                negative_slope = True
+            i = y1
+            j = x1
 
-                while j <= x2:
-                    if grid[i][j] == 1:
-                        result += 1
-                    grid[i][j] += 1
-                    i += -1 if negative_slope else 1
-                    j += 1
+            # go diagonal
+            while j <= x2:
+                if grid[i][j] == 1:
+                    result += 1
+                grid[i][j] += 1
+                i += -1 if negative_slope else 1
+                j += 1
     return result
 
 
