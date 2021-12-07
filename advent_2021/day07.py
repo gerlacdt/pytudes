@@ -23,7 +23,7 @@ def fuel2(positions):
     result = float("inf")
     mmin = min(positions)
     mmax = max(positions)
-    cache = [sum(range(i)) for i in range(1, mmax + 3)]
+    cache = [sum(range(i)) for i in range(1, mmax + 2)]
     for t in range(mmin, mmax + 1):
         current = 0
         for p in positions:
