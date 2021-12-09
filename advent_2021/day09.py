@@ -1,5 +1,6 @@
 import utils
 from functools import reduce
+import operator
 
 
 def getInput():
@@ -8,50 +9,36 @@ def getInput():
     return grid
 
 
-def low_points(grid):
-    result = []
+def isValid(point, grid):
     maxRow = len(grid)
     maxCol = len(grid[0])
+    row, col = point
+    if row >= 0 and row < maxRow and col >= 0 and col < maxCol:
+        return True
+    return False
 
-    def isValid(point):
-        row, col = point
-        if row >= 0 and row < maxRow and col >= 0 and col < maxCol:
-            return True
-        return False
 
+def low_points(grid):
+    result = []
     for i, row in enumerate(grid):
         for j, col in enumerate(row):
-            points = [n for n in utils.neighbors4((i, j)) if isValid(n)]
+            points = [n for n in utils.neighbors4((i, j)) if isValid(n, grid)]
             if all([col < grid[y][x] for y, x in points]):
-                result.append(col)
-    return sum([risk + 1 for risk in result])
+                result.append((i, j))
+    return result
+
+
+def heightmap(grid):
+    return sum([grid[y][x] + 1 for y, x in low_points(grid)])
 
 
 def basin(grid):
-    # find start points
-    start_points = []
-    maxRow = len(grid)
-    maxCol = len(grid[0])
-
-    def isValid(point):
-        row, col = point
-        if row >= 0 and row < maxRow and col >= 0 and col < maxCol:
-            return True
-        return False
-
-    for i, row in enumerate(grid):
-        for j, col in enumerate(row):
-            points = [n for n in utils.neighbors4((i, j)) if isValid(n)]
-            if all([col < grid[y][x] for y, x in points]):
-                start_points.append((i, j))
-
     def successors(point):
         y, x = point
-
         return [
             (y + y1, x + x1)
             for y1, x1 in utils.HEADINGS
-            if isValid((y + y1, x + x1)) and grid[y + y1][x + x1] != 9
+            if isValid((y + y1, x + x1), grid) and grid[y + y1][x + x1] != 9
         ]
 
     def dfs(start):
@@ -64,18 +51,13 @@ def basin(grid):
                 continue
             size += 1
             visited.add(point)
-            # print("point: {}".format(point))
-            # print("val: {}".format((grid[point[0]][point[1]])))
-            # print("frontier: {}".format(frontier))
-            # print("visited: {}".format(visited))
             for succ in successors(point):
                 if succ not in visited:
                     frontier.append(succ)
-        # print()
         return size
 
-    result = sorted([dfs(start) for start in start_points])[-3:]
-    return reduce(lambda acc, x: acc * x, result)
+    result = sorted([dfs(start) for start in low_points(grid)])[-3:]
+    return reduce(operator.mul, result)
 
 
 example = """2199943210
@@ -85,15 +67,15 @@ example = """2199943210
 9899965678"""
 
 
-def test_low_points_example():
+def test_heightmap_low_points_example():
     grid = [[int(c) for c in list(line)] for line in example.splitlines()]
-    actual = low_points(grid)
+    actual = heightmap(grid)
     assert actual == 15
 
 
-def test_low_points():
+def test_heightmap_low_points():
     grid = getInput()
-    actual = low_points(grid)
+    actual = heightmap(grid)
     assert actual == 522
 
 
