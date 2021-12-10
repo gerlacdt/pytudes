@@ -51,6 +51,8 @@ WIRINGS = ["".join(t) for t in permutations("abcdefg")]
 def find_pattern(signals):
     want = set([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
     for w in WIRINGS:
+        if not isValid(w, signals):
+            continue
         result = set()
         for s in signals:
             number = decode(s, w)
@@ -58,6 +60,24 @@ def find_pattern(signals):
         if result == want:
             return w
     return None
+
+
+def isValid(wiring, signals):
+    one = [s for s in signals if len(s) == 2][0]
+    if not wiring[2] in one or not wiring[5] in one:
+        return False
+
+    seven = [s for s in signals if len(s) == 3][0]
+    first = list(set(seven) - set(one))[0]
+    if wiring[0] != first:
+        return False
+
+    four = [s for s in signals if len(s) == 4][0]
+    rest = set(four) - set(one)
+    if not wiring[1] in rest or not wiring[3] in rest:
+        return False
+
+    return True
 
 
 def digits(segments):
