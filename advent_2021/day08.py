@@ -19,6 +19,9 @@ def easy_digits(segments):
     return result
 
 
+# second part
+
+
 VALID_NUMBERS = {
     (True, True, True, False, True, True, True): 0,
     (False, False, True, False, False, True, False): 1,
@@ -31,6 +34,8 @@ VALID_NUMBERS = {
     (True, True, True, True, True, True, True): 8,
     (True, True, True, True, False, True, True): 9,
 }
+
+WIRINGS = ["".join(t) for t in permutations("abcdefg")]
 
 
 def decode(signal, wiring):
@@ -45,12 +50,9 @@ def decode(signal, wiring):
     return None
 
 
-WIRINGS = ["".join(t) for t in permutations("abcdefg")]
-
-
-def find_pattern(signals):
+def find_wiring(signals, wirings=WIRINGS):
     want = set([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-    for w in WIRINGS:
+    for w in wirings:
         if not isValid(w, signals):
             continue
         result = set()
@@ -85,14 +87,17 @@ def digits(segments):
     for s in segments:
         signals = s[:10]
         outputs = s[-4:]
-        p = find_pattern(signals)
-        if p:
+        w = find_wiring(signals)
+        if w:
             result = []
             for o in outputs:
                 result.append(decode(o, p))
             total += int("".join([str(val) for val in result]))
 
     return total
+
+
+# tests
 
 
 example = """be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe
@@ -138,10 +143,10 @@ def test_digits_example():
     assert actual == 61229
 
 
-def test_find_pattern_single_example():
+def test_find_wiring_single_example():
     lines = utils.Array(single_example)
     signals = lines[0][:10]
-    actual = find_pattern(signals)
+    actual = find_wiring(signals)
 
     assert actual == "deafgbc"
 
