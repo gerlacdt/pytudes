@@ -46,38 +46,38 @@ def inc_neighbors(grid, point):
         grid[y][x] += 1
 
 
-def flash(grid, point, flashed):
-    y, x = point
-    visited = set()
-    frontier = [point]
+def flash(grid, start_points):
+    flashed = set()
+    frontier = start_points[:]
     while frontier:
         point = frontier.pop()
         y, x = point
-        if point in visited:
+        if point in flashed:
             continue
-        visited.add(point)
+        # flash point
+        inc_neighbors(grid, point)
+        flashed.add(point)
         for n in neighbors(grid, point):
             succ_y, succ_x = n
-            if grid[succ_y][succ_x] > 9:
-                if n not in flashed:
-                    inc_neighbors(grid, n)
-                flashed.add(n)
+            if grid[succ_y][succ_x] > 9 and n not in flashed:
+                frontier.append(n)
 
-    return None
+    return flashed
 
 
 def step(grid):
-    flashed = set()
     # increase by 1
     for y, row in enumerate(grid):
         for x, col in enumerate(row):
             grid[y][x] += 1
 
     # chain reaction flash
+    start_points = []
     for y, row in enumerate(grid):
         for x, col in enumerate(row):
             if col > 9:
-                flash(grid, (y, x), flashed)
+                start_points.append((y, x))
+    flashed = flash(grid, start_points)
 
     # set to 0 for all val > 9
     for y, row in enumerate(grid):
@@ -93,6 +93,15 @@ def count_flashes(grid, steps=100):
         total_flushes += step(grid)
 
     return total_flushes
+
+
+def count_flashes_sync(grid, steps):
+    total_flushes = len(grid) * len(grid[0])
+    for i in range(steps):
+        if total_flushes == step(grid):
+            return i + 1
+
+    return None
 
 
 simple_example = """11111
@@ -139,7 +148,7 @@ example = """5483143223
 5283751526"""
 
 
-def test_count_flashes_example():
+def test_count_flashes_example_steps():
     grid = toGrid(example)
     actual = count_flashes(grid, 1)
 
@@ -171,3 +180,32 @@ def test_count_flashes_example():
     actual = count_flashes(grid, 2)
 
     assert gridToString(grid) == expected_step2, "step 2 failed"
+
+
+def test_count_flashes_example():
+    grid = toGrid(example)
+    actual = count_flashes(grid, 10)
+    assert actual == 204
+
+    grid = toGrid(example)
+    actual = count_flashes(grid, 100)
+    assert actual == 1656
+
+
+def test_count_flashes():
+    grid = toGrid(getInput())
+    actual = count_flashes(grid, 100)
+
+    assert actual == 1681
+
+
+def test_count_flashes_sync_example():
+    grid = toGrid(example)
+    actual = count_flashes_sync(grid, 200)
+    assert actual == 195
+
+
+def test_count_flashes_sync():
+    grid = toGrid(getInput())
+    actual = count_flashes_sync(grid, 2000)
+    assert actual == 276
