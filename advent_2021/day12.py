@@ -28,7 +28,7 @@ def successors2(graph, assignment: List[str]):
     succs = graph[current]
     counts = Counter(assignment)
     alreadyTwice = (
-        sum((1 for key, val in counts.items() if key.islower() and val > 1)) > 1
+        sum((1 for key, val in counts.items() if key.islower() and val > 1)) > 0
     )
 
     def isValid(s):
@@ -44,8 +44,8 @@ def successors2(graph, assignment: List[str]):
         if s.islower() and counts[s] > 1:
             # triple accessing node is not allowed
             return False
-        if alreadyTwice:
-            # accessing twice is not allowed
+        if s.islower() and s in counts and counts[s] == 1 and alreadyTwice:
+            # accessing twice for two small caves is not allowed
             return False
         return True
 
