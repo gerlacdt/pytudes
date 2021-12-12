@@ -41,16 +41,12 @@ BIG = 10 ** 999
 ################ Functions for Input, Parsing
 
 
-def Input(day):
-    "Open this day's input file."
-    directory = "./data/"
-    filename = directory + "input{}.txt".format(day)
-    return open(filename)
-
-
 def Inputstr(day):
     "The contents of this day's input file as a str."
-    return Input(day).read().rstrip("\n")
+    directory = "./data/"
+    filename = directory + "input{}.txt".format(day)
+    with open(filename) as f:
+        return f.read().rstrip("\n")
 
 
 def Array(lines):
