@@ -1,6 +1,6 @@
 import utils
 
-from collections import deque, Counter, namedtuple
+from collections import Counter, namedtuple, defaultdict
 
 
 def getInput():
@@ -17,17 +17,28 @@ def getPolymer(text):
     return template, rules
 
 
-def step(counts, rules):
-    result = {}
-
-    return result
+def step(pair_counts, element_counts, rules):
+    pair_result = defaultdict(int)
+    element_result = element_counts.copy()
+    for key, insert_element in rules.items():
+        element_result[insert_element] += pair_counts[key]
+        pair_result[key[0] + insert_element] += pair_counts[key]
+        pair_result[insert_element + key[1]] += pair_counts[key]
+    return pair_result, element_result
 
 
 def polymerize(template, rules, steps=10):
-    counts = Counter(template)
+    pair_counts = defaultdict(int)
+    element_counts = Counter(template)
+
+    # create pair counts from initial polymer
+    for i in range(1, len(template)):
+        pair_counts[template[i - 1] + template[i]] += 1
+
+    # execute steps
     for i in range(steps):
-        counts = step(counts, rules)
-    return max(counts.values()) - min(counts.values())
+        pair_counts, element_counts = step(pair_counts, element_counts, rules)
+    return max(element_counts.values()) - min(element_counts.values())
 
 
 example = """NNCB
@@ -59,7 +70,7 @@ def test_getPolymer():
 
 Case = namedtuple(
     "Case",
-    ["steps", "expected", "p"],
+    ["steps", "expected"],
 )
 
 
@@ -71,7 +82,7 @@ def test_polymerize_example():
         Case(3, 7),
         Case(4, 18),
         Case(10, 1588),
-        # Case(40, 2188189693529),
+        Case(40, 2188189693529),
     ]
     for c in cases:
         actual = polymerize(template, rules, c.steps)
@@ -82,3 +93,9 @@ def test_polymerize():
     template, rules = getPolymer(getInput())
     actual = polymerize(template, rules, 10)
     assert actual == 2768
+
+
+def test_polymerize2():
+    template, rules = getPolymer(getInput())
+    actual = polymerize(template, rules, 40)
+    assert actual == 2914365137499
