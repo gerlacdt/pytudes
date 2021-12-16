@@ -7,7 +7,7 @@ def getInput():
     return utils.Inputstr("14")
 
 
-def getPolymer(text):
+def parse(text):
     lines = text.splitlines()
     template = lines[0]
     rules = {}
@@ -62,8 +62,8 @@ CN -> C
 """
 
 
-def test_getPolymer():
-    template, rules = getPolymer(example)
+def test_parse():
+    template, rules = parse(example)
     assert template == "NNCB"
     assert len(rules) == 16
 
@@ -75,7 +75,7 @@ Case = namedtuple(
 
 
 def test_polymerize_example():
-    template, rules = getPolymer(example)
+    template, rules = parse(example)
     cases = [
         Case(1, 1),
         Case(2, 5),
@@ -90,12 +90,9 @@ def test_polymerize_example():
 
 
 def test_polymerize():
-    template, rules = getPolymer(getInput())
-    actual = polymerize(template, rules, 10)
-    assert actual == 2768
+    template, rules = parse(getInput())
+    cases = [Case(10, 2768), Case(40, 2914365137499)]
 
-
-def test_polymerize2():
-    template, rules = getPolymer(getInput())
-    actual = polymerize(template, rules, 40)
-    assert actual == 2914365137499
+    for c in cases:
+        actual = polymerize(template, rules, c.steps)
+        assert actual == c.expected, "Case: steps: {}".format(c.steps)
