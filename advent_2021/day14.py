@@ -82,14 +82,18 @@ def getInput():
 def getPolymer(text):
     lines = text.splitlines()
     template = lines[0]
-    pairs = {}
+    rules = {}
     for i in range(2, len(lines)):
         pair = lines[i].split("->")
-        pairs[pair[0].strip()] = pair[1].strip()
-    return template, pairs
+        rules[pair[0].strip()] = pair[1].strip()
+    return template, rules
 
 
-def polymerize(template, pairs, steps=10):
+def step(counts, rules):
+    pass
+
+
+def polymerize(template, rules, steps=10):
     polymer = DoubleLinkedList(list(template))
     for i in range(steps):
         print("step: {}".format(i))
@@ -97,8 +101,8 @@ def polymerize(template, pairs, steps=10):
         while current:
             key = current.prev.data + current.data
 
-            if key in pairs:
-                val = pairs[key]
+            if key in rules:
+                val = rules[key]
                 polymer.insert_after(current.prev, val)
                 current = current.next
             else:
@@ -130,9 +134,9 @@ CN -> C
 
 
 def test_getPolymer():
-    template, pairs = getPolymer(example)
+    template, rules = getPolymer(example)
     assert template == "NNCB"
-    assert len(pairs) == 16
+    assert len(rules) == 16
 
 
 Case = namedtuple(
@@ -142,7 +146,7 @@ Case = namedtuple(
 
 
 def test_polymerize_example():
-    template, pairs = getPolymer(example)
+    template, rules = getPolymer(example)
     cases = [
         Case(1, 1, "NCNBCHB"),
         Case(2, 5, "NBCCNBBBCBHCB"),
@@ -152,14 +156,14 @@ def test_polymerize_example():
         # Case(40, 2188189693529, ""),
     ]
     for c in cases:
-        actual, p = polymerize(template, pairs, c.steps)
+        actual, p = polymerize(template, rules, c.steps)
         # assert p == c.p
         assert actual == c.expected, "Case: {}".format(c)
 
 
 def test_polymerize():
-    template, pairs = getPolymer(getInput())
-    actual, _ = polymerize(template, pairs, 10)
+    template, rules = getPolymer(getInput())
+    actual, _ = polymerize(template, rules, 10)
     assert actual == 2768
 
 
