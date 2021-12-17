@@ -1,4 +1,7 @@
 import utils
+import sys
+
+sys.setrecursionlimit(10000)
 
 
 def getInput():
@@ -67,6 +70,23 @@ def chiton(grid):
     return sum(costs) - costs[0]
 
 
+def chiton5x5(grid):
+    grid5x5 = [[0 for _ in range(5 * len(grid[0]))] for _ in range(5 * len(grid))]
+
+    for i in range(len(grid5x5)):
+        for j in range(len(grid5x5[0])):
+            val = grid[i % len(grid)][j % len(grid[0])]
+            x_mod = i // len(grid)
+            y_mod = j // len(grid[0])
+            val += x_mod + y_mod
+            if val >= 10:
+                val %= 10
+                val += 1
+            grid5x5[i][j] = val
+
+    return chiton(grid5x5)
+
+
 example = """1163751742
 1381373672
 2136511328
@@ -91,3 +111,17 @@ def test_chiton():
     actual = chiton(grid)
 
     assert actual == 537
+
+
+def test_chiton5x5_example():
+    grid = parse(example)
+    actual = chiton5x5(grid)
+
+    assert actual == 315
+
+
+def test_chiton5x5():
+    grid = parse(getInput())
+    actual = chiton5x5(grid)
+
+    assert actual == 2881
