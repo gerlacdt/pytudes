@@ -433,3 +433,17 @@ def maxval(dic):
 def rangei(start, end, step=1):
     """Inclusive, range from start to end: rangei(a, b) = range(a, b+1)."""
     return range(start, end + 1, step)
+
+
+# some more utils
+def nothing(*args) -> None:
+    return None
+
+
+def sign(x) -> int:
+    return 0 if x == 0 else +1 if x > 0 else -1
+
+
+def quantify(iterable, pred=bool) -> int:
+    """Count the number of items in iterable for which pred is true."""
+    return sum(1 for item in iterable if pred(item))
